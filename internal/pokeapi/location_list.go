@@ -7,7 +7,16 @@ import (
 )
 
 // ListLocations -
-func (c *Client) ListLocations(pageURL *string) (RespShallowLocations, error) {
+func (c *Client) ListLocations(pageURL *string, cache *Cache) (RespShallowLocations, error) {
+	if data, ok := cache.Get(pageURL); ok {
+		locationsResp := RespShallowLocations{}
+		err := json.Unmarshal(data, &locationsResp)
+		if err != nil {
+			return RespShallowLocations{}, err
+		}
+		return locationsResp, nil
+	}
+
 	url := baseURL + "/location-area"
 	if pageURL != nil {
 		url = *pageURL
@@ -34,6 +43,7 @@ func (c *Client) ListLocations(pageURL *string) (RespShallowLocations, error) {
 	if err != nil {
 		return RespShallowLocations{}, err
 	}
+	cache.Add(url, dat)
 
 	return locationsResp, nil
 }

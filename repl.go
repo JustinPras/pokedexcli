@@ -6,10 +6,12 @@ import (
 	"strings"
 	"os"
 	"github.com/JustinPras/pokedexcli/internal/pokeapi"
+	"github.com/JustinPras/pokedexcli/internal/pokecache"
 )
 
 type Config struct {
 	pokeapiClient pokeapi.Client
+	pokeCache pokecache.Cache
 	previousURL *string
 	nextURL *string
 }
