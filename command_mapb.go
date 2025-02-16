@@ -2,36 +2,24 @@ package main
 
 import (
 	"fmt"
-	"net/http"
-	"encoding/json"
-	"io"
+	"errors"
 )
 
 func commandMapb(config *Config) error {
-	if config.previous == 0 {
-		fmt.Println("you're on the first page")
-		return nil
+	if config.previousURL == nil {
+		return errors.New("you're on the first page")
 	}
 
-	for i := config.previous; i < config.previous + 20; i++ {
-		resp, err := http.Get(fmt.Sprintf("https://pokeapi.co/api/v2/location-area/%d", i))
-		if err != nil {
-			return fmt.Errorf("error making GET request - %s", err)
-		}
-		defer resp.Body.Close()
+	locationsResp, err := config.pokeapiClient.ListLocations(config.previousURL)
+	if err != nil {
+		return err
+	}
 
-		data, err := io.ReadAll(resp.Body)
-		if err != nil {
-			return err
-		}
+	config.nextLocationsURL = locationsResp.Next
+	config.prevLocationsURL = locationsResp.Previous
 
-		var location Location
-		err = json.Unmarshal(data, &location)
-		if err != nil {
-			return fmt.Errorf("error unmarshalling JSON - %s", err)
-		}
+	for _, location := range locationsResp.Results {
 		fmt.Println(location.Name)
 	}
-	config.Back()
 	return nil
 }
