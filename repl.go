@@ -5,6 +5,7 @@ import (
 	"bufio"
 	"strings"
 	"os"
+	"github.com/JustinPras/pokedexcli/internal/pokeapi"
 )
 
 type Config struct {

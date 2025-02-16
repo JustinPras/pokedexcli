@@ -5,13 +5,13 @@ import (
 )
 
 func commandMap(config *Config) error {
-	locationsResp, err := config.pokeapiClient.ListLocations(config.nextLocationsURL)
+	locationsResp, err := config.pokeapiClient.ListLocations(config.nextURL)
 	if err != nil {
 		return err
 	}
 
-	config.nextLocationsURL = locationsResp.Next
-	config.prevLocationsURL = locationsResp.Previous
+	config.nextURL = locationsResp.Next
+	config.previousURL = locationsResp.Previous
 
 	for _, location := range locationsResp.Results {
 		fmt.Println(location.Name)
