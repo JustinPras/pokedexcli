@@ -8,19 +8,20 @@ import (
 )
 
 // ListLocations -
-func (c *Client) ListLocations(pageURL *string, cache *Cache) (RespShallowLocations, error) {
-	if data, ok := cache.Get(pageURL); ok {
+func (c *Client) ListLocations(pageURL *string, cache *pokecache.Cache) (RespShallowLocations, error) {
+	url := baseURL + "/location-area"
+	if pageURL != nil {
+		url = *pageURL
+	}
+
+
+	if data, ok := cache.Get(url); ok {
 		locationsResp := RespShallowLocations{}
 		err := json.Unmarshal(data, &locationsResp)
 		if err != nil {
 			return RespShallowLocations{}, err
 		}
 		return locationsResp, nil
-	}
-
-	url := baseURL + "/location-area"
-	if pageURL != nil {
-		url = *pageURL
 	}
 
 	req, err := http.NewRequest("GET", url, nil)
