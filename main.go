@@ -11,7 +11,7 @@ func main() {
 	pokeCache := pokecache.NewCache(5 * time.Second)
 	config := &Config{
 		pokeapiClient: pokeClient,
-		pokeCache: pokeCache,
+		pokeCache: *pokeCache,
 	}
 	startRepl(config)
 }
