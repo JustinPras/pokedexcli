@@ -10,7 +10,7 @@ func commandMapb(config *Config) error {
 		return errors.New("you're on the first page")
 	}
 
-	locationsResp, err := config.pokeapiClient.ListLocations(config.previousURL, &config.pokeCache)
+	locationsResp, err := config.pokeapiClient.ListLocations(config.previousURL)
 	if err != nil {
 		return err
 	}
