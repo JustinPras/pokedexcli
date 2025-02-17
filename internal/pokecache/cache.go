@@ -12,12 +12,17 @@ type cacheEntry struct {
 
 type Cache struct {
 	cacheEntries map[string]cacheEntry
+	mu *sync.RWMutex
 }
 
 func NewCache(interval time.Duration) *Cache {
 	ticker := time.NewTicker(interval)
-	go reapLoop(&ticker, interval)
-	return &Cache{}
+	cache := &Cache{
+		cacheEntries: make(map[string]cacheEntry),
+		mu: &sync.RWMutex{},
+	}
+	go cache.reapLoop(ticker, interval)
+	return cache
 }
 
 func (c *Cache) Add(key string, val []byte) {

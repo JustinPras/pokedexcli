@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"github.com/JustinPras/pokedexcli/internal/pokecache"
 )
 
 // ListLocations -
