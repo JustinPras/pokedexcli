@@ -10,19 +10,20 @@ func commandExplore(config *Config, args []string) error {
 		return fmt.Errorf("usage: explore <location-areas>")
 	}
 
-	location := args[0]
-	fmt.Printf("Exploring %s...\n", location)
+	name := args[0]
+	
 
-	pokemonResp, err := config.pokeapiClient.ListPokemon(location)
+	location, err := config.pokeapiClient.GetLocation(name)
 	if err != nil {
 		fmt.Println("Found no Pokemon")
 		return err
 	}
 
+	fmt.Printf("Exploring %s...\n", location.name)
 
 	fmt.Println("Found Pokemon:")
-	for _, pokemon := range pokemonResp.PokemonEncounters {
-		fmt.Printf(" - %s\n", pokemon.Pokemon.Name)
+	for _, encounter := range location.PokemonEncounters {
+		fmt.Printf(" - %s\n", encounter.Pokemon.Name)
 	}
 	return nil
 }
