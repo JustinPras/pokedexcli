@@ -5,7 +5,7 @@ import (
 	"errors"
 )
 
-func commandMapb(config *Config) error {
+func commandMapb(config *Config, args []string) error {
 	if config.previousURL == nil {
 		return errors.New("you're on the first page")
 	}

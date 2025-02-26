@@ -7,13 +7,24 @@ import (
 )
 	
 
-func ListPokemon(url string) (RespPokemon, error) {
+func (c *Client) ListPokemon(pageURL string) (RespPokemon, error) {
+	url := baseURL + "/location-area/" + pageURL
+
+	if data, ok := c.cache.Get(url); ok {
+		pokemonResp := RespPokemon{}
+		err := json.Unmarshal(data, &pokemonResp)
+		if err != nil {
+			return RespPokemon{}, err
+		}
+		return pokemonResp, nil
+	}
+
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return RespPokemon{}, err
 	}
 
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := c.httpClient.Do(req)
 	if err != nil {
 		return RespPokemon{}, err
 	}
@@ -30,5 +41,6 @@ func ListPokemon(url string) (RespPokemon, error) {
 		return RespPokemon{}, err
 	}
 
+	c.cache.Add(url, dat)
 	return pokemonResp, nil
 }
