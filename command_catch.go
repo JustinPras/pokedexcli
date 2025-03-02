@@ -11,12 +11,9 @@ func commandCatch(config *Config, args []string) error {
 		return fmt.Errorf("usage: catch <pokemon>")
 	}
 
-
 	name := args[0]
-
 	pokemon, err := config.pokeapiClient.GetPokemon(name)
 	if err != nil {
-		fmt.Println("Pokemon not found")
 		return err
 	}
 
@@ -26,10 +23,9 @@ func commandCatch(config *Config, args []string) error {
 	
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 
-	userChance := r.Intn(1001)
-	pokemonCatchDifficulty := pokemon.BaseExperience/10
+	userChance := r.Intn(pokemon.BaseExperience)
 
-	if userChance > pokemonCatchDifficulty {
+	if userChance <= 40 {
 		fmt.Printf("%s was caught!\n", pokemonName)
 		config.pokedex[pokemonName] = pokemon
 	} else {
