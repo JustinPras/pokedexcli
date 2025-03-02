@@ -13,8 +13,7 @@ func commandInspect(config *Config, args []string) error {
 
 	pokemon, ok := config.pokedex[name]
 	if !ok {
-		fmt.Println("you have not caught that pokemon")
-		return nil
+		return fmt.Errorf("you have not caught that pokemon")
 	}
 
 	fmt.Printf("Name: %s\n", pokemon.Name)
@@ -22,11 +21,11 @@ func commandInspect(config *Config, args []string) error {
 	fmt.Printf("Weight: %b\n", pokemon.Weight)
 	fmt.Print("Stats:\n")
 	for _, stat := range(pokemon.Stats) {
-		fmt.Printf("\t-%s: %b\n", stat.Stat.Name, stat.BaseStat)
+		fmt.Printf("  -%s: %b\n", stat.Stat.Name, stat.BaseStat)
 	}
 	fmt.Print("Types:\n")
 	for _, typef := range(pokemon.Types) {
-		fmt.Printf("\t- %s\n", typef.Type.Name)
+		fmt.Printf("  - %s\n", typef.Type.Name)
 	}
 
 	return nil
