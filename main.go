@@ -2,7 +2,11 @@ package main
 
 import (
 	"time"
-	"github.com/JustinPras/pokedexcli/internal/pokeapi"
+	"log"
+	"database/sql"
+    
+	_ "github.com/mattn/go-sqlite3"
+    "github.com/JustinPras/pokedexcli/internal/pokeapi"
 )
 
 func main() {
