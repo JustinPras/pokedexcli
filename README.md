@@ -2,6 +2,7 @@
 
 ## To-Do List
 - [ ] Persist a user's Pokedex to SQL database so they can save progress between sessions
+      - Currently using config.pokedex to store pokemon. Need to transfer to using sqlite3 DB.
 - [ ] Update the CLI to support the "up" arrow to cycle through previous commands
 - [ ] Simulate battles between pokemon
 - [ ] Add more unit tests
