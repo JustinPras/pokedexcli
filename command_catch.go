@@ -4,6 +4,10 @@ import (
 	"fmt"
 	"math/rand"
 	"time"
+	"context"
+
+	"github.com/JustinPras/pokedexcli/internal/database"
+	"github.com/JustinPras/pokedexcli/internal/pokeapi"
 )
 
 func commandCatch(s *state, args []string) error {
@@ -28,7 +32,7 @@ func commandCatch(s *state, args []string) error {
 	if userChance <= 40 {
 		fmt.Printf("%s was caught!\n", pokemonName)
 		s.cfg.pokedex[pokemonName] = pokemon
-		err = createPokedexEntry(pokemon)
+		err = createPokedexEntry(s, pokemon)
 		if err != nil {
 			return fmt.Errorf("Error storing pokemon in database: %w", err)
 		}
@@ -40,5 +44,19 @@ func commandCatch(s *state, args []string) error {
 }
 
 func createPokedexEntry(s *state, pokemon pokeapi.Pokemon) error {
-	s.db.
+	createPokedexEntryParams := database.CreatePokedexEntryParams {
+		PokemonName:	pokemon.Name,
+		Experience:		int64(pokemon.BaseExperience),
+		CapturedAt:		time.Now(),
+		Height:			int64(pokemon.Height),
+		Weight:			int64(pokemon.Weight),
+		PokemonID:		int64(pokemon.ID),
+	}
+
+	_, err := s.db.CreatePokedexEntry(context.Background(), createPokedexEntryParams)
+	if err != nil {
+		return fmt.Errorf("Error creating Pokedex Entry: %w", err)
+	}	
+
+	return nil
 }

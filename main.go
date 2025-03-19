@@ -4,24 +4,28 @@ import (
 	"time"
 	"log"
 	"database/sql"
+	"fmt"
     
 	_ "github.com/mattn/go-sqlite3"
     "github.com/JustinPras/pokedexcli/internal/pokeapi"
+	"github.com/JustinPras/pokedexcli/internal/database"
 )
 
 type state struct {
 	db	*database.Queries
-	cfg	*config.Config
+	cfg	*Config
 }
 
 func main() {
 	pokeClient := pokeapi.NewClient(5 * time.Second, 5 * time.Minute)
 	pokedex := make(map[string]pokeapi.Pokemon)
-	
+
 	config := &Config{
 		pokeapiClient: pokeClient,
 		pokedex: pokedex,
 	}
+
+	fmt.Println("I made it to the beginning of the DB code!")
 
 	db, err := sql.Open("sqlite3", "pokedex.db")
 	if err != nil {
@@ -35,5 +39,6 @@ func main() {
 		cfg:	config,
 	}
 
-	startRepl(programState)
+	fmt.Println("I made it to the end of main!")
+	startRepl(&programState)
 }
