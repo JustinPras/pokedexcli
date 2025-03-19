@@ -6,13 +6,13 @@ import (
 	"time"
 )
 
-func commandCatch(state *state, args []string) error {
+func commandCatch(s *state, args []string) error {
 	if len(args) < 1 {
 		return fmt.Errorf("usage: catch <pokemon>")
 	}
 
 	name := args[0]
-	pokemon, err := state.cfg.pokeapiClient.GetPokemon(name)
+	pokemon, err := s.cfg.pokeapiClient.GetPokemon(name)
 	if err != nil {
 		return err
 	}
@@ -27,7 +27,7 @@ func commandCatch(state *state, args []string) error {
 
 	if userChance <= 40 {
 		fmt.Printf("%s was caught!\n", pokemonName)
-		state.cfg.pokedex[pokemonName] = pokemon
+		s.cfg.pokedex[pokemonName] = pokemon
 		err = createPokedexEntry(pokemon)
 		if err != nil {
 			return fmt.Errorf("Error storing pokemon in database: %w", err)
@@ -39,6 +39,6 @@ func commandCatch(state *state, args []string) error {
 	return nil
 }
 
-func createPokedexEntry(pokemon pokeapi.Pokemon) error {
-
+func createPokedexEntry(s *state, pokemon pokeapi.Pokemon) error {
+	s.db.
 }
