@@ -4,14 +4,14 @@ import (
 	"fmt"
 )
 
-func commandInspect(config *Config, args []string) error {
+func commandInspect(state *state, args []string) error {
 	if len(args) < 1 {
 		return fmt.Errorf("usage: inspect <pokemon>")
 	}
 
 	name := args[0]
 
-	pokemon, ok := config.pokedex[name]
+	pokemon, ok := state.cfg.pokedex[name]
 	if !ok {
 		return fmt.Errorf("you have not caught that pokemon")
 	}

@@ -5,18 +5,18 @@ import (
 	"errors"
 )
 
-func commandMapb(config *Config, args []string) error {
-	if config.previousURL == nil {
+func commandMapb(state *state, args []string) error {
+	if state.cfg.previousURL == nil {
 		return errors.New("you're on the first page")
 	}
 
-	locationsResp, err := config.pokeapiClient.ListLocations(config.previousURL)
+	locationsResp, err := state.cfg.pokeapiClient.ListLocations(state.cfg.previousURL)
 	if err != nil {
 		return err
 	}
 
-	config.nextURL = locationsResp.Next
-	config.previousURL = locationsResp.Previous
+	state.cfg.nextURL = locationsResp.Next
+	state.cfg.previousURL = locationsResp.Previous
 
 	for _, location := range locationsResp.Results {
 		fmt.Println(location.Name)

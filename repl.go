@@ -15,7 +15,7 @@ type Config struct {
 	pokedex map[string]pokeapi.Pokemon
 }
 
-func startRepl(config *Config) {
+func startRepl(state *state) {
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
 		fmt.Print("Pokedex > ")
@@ -34,7 +34,7 @@ func startRepl(config *Config) {
 
 		command, exists := getCommands()[commandName]
 		if exists {
-			err := command.callback(config, args)
+			err := command.callback(state, args)
 			if err != nil {
 				fmt.Println("Error: ", err)
 			}
@@ -53,7 +53,7 @@ func cleanInput(text string) []string {
 type cliCommand struct {
 	name string
 	description string
-	callback func(*Config, []string) error
+	callback func(*state, []string) error
 } 
 
 func getCommands() map[string]cliCommand {

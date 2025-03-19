@@ -5,7 +5,7 @@ import (
 )
 
 // implement this function
-func commandExplore(config *Config, args []string) error {
+func commandExplore(state *state, args []string) error {
 	if len(args) != 1 {
 		return fmt.Errorf("usage: explore <location-areas>")
 	}
@@ -13,7 +13,7 @@ func commandExplore(config *Config, args []string) error {
 	name := args[0]
 	
 
-	location, err := config.pokeapiClient.GetLocation(name)
+	location, err := state.cfg.pokeapiClient.GetLocation(name)
 	if err != nil {
 		fmt.Println("Found no Pokemon")
 		return err

@@ -4,14 +4,14 @@ import (
 	"fmt"
 )
 
-func commandMap(config *Config, args []string) error {
-	locationsResp, err := config.pokeapiClient.ListLocations(config.nextURL)
+func commandMap(state *state, args []string) error {
+	locationsResp, err := state.cfg.pokeapiClient.ListLocations(state.cfg.nextURL)
 	if err != nil {
 		return err
 	}
 
-	config.nextURL = locationsResp.Next
-	config.previousURL = locationsResp.Previous
+	state.cfg.nextURL = locationsResp.Next
+	state.cfg.previousURL = locationsResp.Previous
 
 	for _, location := range locationsResp.Results {
 		fmt.Println(location.Name)
