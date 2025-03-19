@@ -88,3 +88,23 @@ func (q *Queries) GetPokedex(ctx context.Context) ([]Pokedex, error) {
 	}
 	return items, nil
 }
+
+const getPokemonByName = `-- name: GetPokemonByName :one
+SELECT id, pokemon_name, experience, captured_at, height, weight, pokemon_id FROM pokedex
+WHERE pokemon_name = ?
+`
+
+func (q *Queries) GetPokemonByName(ctx context.Context, pokemonName string) (Pokedex, error) {
+	row := q.db.QueryRowContext(ctx, getPokemonByName, pokemonName)
+	var i Pokedex
+	err := row.Scan(
+		&i.ID,
+		&i.PokemonName,
+		&i.Experience,
+		&i.CapturedAt,
+		&i.Height,
+		&i.Weight,
+		&i.PokemonID,
+	)
+	return i, err
+}

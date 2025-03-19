@@ -12,3 +12,7 @@ RETURNING *;
 
 -- name: GetPokedex :many
 SELECT * FROM pokedex;
+
+-- name: GetPokemonByName :one
+SELECT * FROM pokedex
+WHERE pokemon_name = ?;
