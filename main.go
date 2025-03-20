@@ -5,6 +5,8 @@ import (
 	"log"
 	"database/sql"
 	"fmt"
+	"encoding/json"
+	"context"
     
 	_ "github.com/mattn/go-sqlite3"
     "github.com/JustinPras/pokedexcli/internal/pokeapi"
@@ -39,6 +41,27 @@ func main() {
 		cfg:	config,
 	}
 
+	fillPokedex(&programState)
+
 	fmt.Println("I made it to the end of main!")
 	startRepl(&programState)
+}
+
+
+func fillPokedex(s *state) error {
+	pokedex, err := s.db.GetPokedex(context.Background())
+	if err != nil {
+		return err
+	}
+
+	pokemon := pokeapi.Pokemon{}
+
+	for _, pokedexEntry := range(pokedex) {
+		err = json.Unmarshal([]byte(pokedexEntry.JsonData), &pokemon)
+		if err != nil {
+			return err
+		}
+		s.cfg.pokedex[pokedexEntry.PokemonName] = pokemon 
+	}
+	return nil
 }

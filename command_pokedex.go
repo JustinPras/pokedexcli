@@ -14,5 +14,6 @@ func commandPokedex(s *state, args []string) error{
 		fmt.Printf(" - %s\n", pokemon.Name)
 	}
 
+
 	return nil
 }

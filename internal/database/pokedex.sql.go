@@ -7,55 +7,38 @@ package database
 
 import (
 	"context"
-	"time"
 )
 
 const createPokedexEntry = `-- name: CreatePokedexEntry :one
-INSERT INTO pokedex(pokemon_name, experience, captured_at, height, weight, pokemon_id)
+INSERT INTO pokedex(pokemon_name, pokemon_id, json_data)
 VALUES (
-    ?,
-    ?,
-    ?,
     ?,
     ?,
     ?
 )
-RETURNING id, pokemon_name, experience, captured_at, height, weight, pokemon_id
+RETURNING id, pokemon_name, pokemon_id, json_data
 `
 
 type CreatePokedexEntryParams struct {
 	PokemonName string
-	Experience  int64
-	CapturedAt  time.Time
-	Height      int64
-	Weight      int64
 	PokemonID   int64
+	JsonData    string
 }
 
 func (q *Queries) CreatePokedexEntry(ctx context.Context, arg CreatePokedexEntryParams) (Pokedex, error) {
-	row := q.db.QueryRowContext(ctx, createPokedexEntry,
-		arg.PokemonName,
-		arg.Experience,
-		arg.CapturedAt,
-		arg.Height,
-		arg.Weight,
-		arg.PokemonID,
-	)
+	row := q.db.QueryRowContext(ctx, createPokedexEntry, arg.PokemonName, arg.PokemonID, arg.JsonData)
 	var i Pokedex
 	err := row.Scan(
 		&i.ID,
 		&i.PokemonName,
-		&i.Experience,
-		&i.CapturedAt,
-		&i.Height,
-		&i.Weight,
 		&i.PokemonID,
+		&i.JsonData,
 	)
 	return i, err
 }
 
 const getPokedex = `-- name: GetPokedex :many
-SELECT id, pokemon_name, experience, captured_at, height, weight, pokemon_id FROM pokedex
+SELECT id, pokemon_name, pokemon_id, json_data FROM pokedex
 `
 
 func (q *Queries) GetPokedex(ctx context.Context) ([]Pokedex, error) {
@@ -70,11 +53,8 @@ func (q *Queries) GetPokedex(ctx context.Context) ([]Pokedex, error) {
 		if err := rows.Scan(
 			&i.ID,
 			&i.PokemonName,
-			&i.Experience,
-			&i.CapturedAt,
-			&i.Height,
-			&i.Weight,
 			&i.PokemonID,
+			&i.JsonData,
 		); err != nil {
 			return nil, err
 		}
@@ -90,7 +70,7 @@ func (q *Queries) GetPokedex(ctx context.Context) ([]Pokedex, error) {
 }
 
 const getPokemonByName = `-- name: GetPokemonByName :one
-SELECT id, pokemon_name, experience, captured_at, height, weight, pokemon_id FROM pokedex
+SELECT id, pokemon_name, pokemon_id, json_data FROM pokedex
 WHERE pokemon_name = ?
 `
 
@@ -100,11 +80,8 @@ func (q *Queries) GetPokemonByName(ctx context.Context, pokemonName string) (Pok
 	err := row.Scan(
 		&i.ID,
 		&i.PokemonName,
-		&i.Experience,
-		&i.CapturedAt,
-		&i.Height,
-		&i.Weight,
 		&i.PokemonID,
+		&i.JsonData,
 	)
 	return i, err
 }

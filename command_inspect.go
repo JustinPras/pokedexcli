@@ -2,9 +2,6 @@ package main
 
 import (
 	"fmt"
-	"context"
-
-	"github.com/JustinPras/pokedexcli/internal/pokeapi"	
 )
 
 func commandInspect(s *state, args []string) error {
@@ -14,9 +11,9 @@ func commandInspect(s *state, args []string) error {
 
 	name := args[0]
 
-	pokemon, err := getPokemonByName(s, name)
-	if err != nil {
-		return fmt.Errorf("you have not caught that pokemon")
+	pokemon, ok := s.cfg.pokedex[name]
+	if !ok {
+		return fmt.Errorf("You have not caught that pokemon")
 	}
 
 	fmt.Printf("Name: %s\n", pokemon.Name)
@@ -32,19 +29,4 @@ func commandInspect(s *state, args []string) error {
 	}
 
 	return nil
-}
-
-func getPokemonByName(s *state, pokemonName string) (pokeapi.Pokemon, error) {
-	pokedexEntry, err := s.db.GetPokemonByName(context.Background(), pokemonName)
-	//handle if the pokemone isn't in the pokedex (hasn't been caught)
-	if err != nil {
-		return pokeapi.Pokemon{}, fmt.Errorf("Error retrieving pokemon: %w", err)
-	}
-
-	pokemon, err := s.cfg.pokeapiClient.GetPokemon(pokedexEntry.PokemonName)
-	if err != nil {
-		return pokeapi.Pokemon{}, err
-	}
-
-	return pokemon, nil
 }

@@ -1,9 +1,6 @@
 -- name: CreatePokedexEntry :one
-INSERT INTO pokedex(pokemon_name, experience, captured_at, height, weight, pokemon_id)
+INSERT INTO pokedex(pokemon_name, pokemon_id, json_data)
 VALUES (
-    ?,
-    ?,
-    ?,
     ?,
     ?,
     ?

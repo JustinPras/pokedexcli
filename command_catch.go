@@ -16,7 +16,7 @@ func commandCatch(s *state, args []string) error {
 	}
 
 	name := args[0]
-	pokemon, err := s.cfg.pokeapiClient.GetPokemon(name)
+	pokemon, jsonStr, err := s.cfg.pokeapiClient.GetPokemon(name)
 	if err != nil {
 		return err
 	}
@@ -32,7 +32,7 @@ func commandCatch(s *state, args []string) error {
 	if userChance <= 40 {
 		fmt.Printf("%s was caught!\n", pokemonName)
 		s.cfg.pokedex[pokemonName] = pokemon
-		err = createPokedexEntry(s, pokemon)
+		err = createPokedexEntry(s, pokemon, jsonStr)
 		if err != nil {
 			return fmt.Errorf("Error storing pokemon in database: %w", err)
 		}
@@ -43,14 +43,11 @@ func commandCatch(s *state, args []string) error {
 	return nil
 }
 
-func createPokedexEntry(s *state, pokemon pokeapi.Pokemon) error {
+func createPokedexEntry(s *state, pokemon pokeapi.Pokemon, jsonStr string) error {
 	createPokedexEntryParams := database.CreatePokedexEntryParams {
 		PokemonName:	pokemon.Name,
-		Experience:		int64(pokemon.BaseExperience),
-		CapturedAt:		time.Now(),
-		Height:			int64(pokemon.Height),
-		Weight:			int64(pokemon.Weight),
 		PokemonID:		int64(pokemon.ID),
+		JsonData:		jsonStr,
 	}
 
 	_, err := s.db.CreatePokedexEntry(context.Background(), createPokedexEntryParams)

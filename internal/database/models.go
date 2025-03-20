@@ -6,13 +6,7 @@ package database
 
 import (
 	"database/sql"
-	"time"
 )
-
-type Ability struct {
-	ID   int64
-	Name string
-}
 
 type GooseDbVersion struct {
 	ID        int64
@@ -24,17 +18,8 @@ type GooseDbVersion struct {
 type Pokedex struct {
 	ID          int64
 	PokemonName string
-	Experience  int64
-	CapturedAt  time.Time
-	Height      int64
-	Weight      int64
 	PokemonID   int64
-}
-
-type PokedexAbility struct {
-	ID          int64
-	AbilitiesID int64
-	PokemonID   int64
+	JsonData    string
 }
 
 type SqliteSequence struct {
