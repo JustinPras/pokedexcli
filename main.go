@@ -27,8 +27,6 @@ func main() {
 		pokedex: pokedex,
 	}
 
-	fmt.Println("I made it to the beginning of the DB code!")
-
 	db, err := sql.Open("sqlite3", "pokedex.db")
 	if err != nil {
 		log.Fatal("Error connecting to the database: %w", err)
@@ -42,8 +40,6 @@ func main() {
 	}
 
 	fillPokedex(&programState)
-
-	fmt.Println("I made it to the end of main!")
 	startRepl(&programState)
 }
 
