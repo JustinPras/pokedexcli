@@ -4,27 +4,23 @@ import (
 	"time"
 	"log"
 	"database/sql"
-	"fmt"
 	"encoding/json"
 	"context"
     
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/mattn/go-sqlite3" //encryption sqlite driver
+	// _ "modernc.org/sqlite" //pure go implementation of sqlite
     "github.com/JustinPras/pokedexcli/internal/pokeapi"
 	"github.com/JustinPras/pokedexcli/internal/database"
+	"github.com/JustinPras/pokedexcli/internal/state"
 )
-
-type state struct {
-	db	*database.Queries
-	cfg	*Config
-}
 
 func main() {
 	pokeClient := pokeapi.NewClient(5 * time.Second, 5 * time.Minute)
 	pokedex := make(map[string]pokeapi.Pokemon)
 
-	config := &Config{
-		pokeapiClient: pokeClient,
-		pokedex: pokedex,
+	config := &state.Config{
+		PokeapiClient: pokeClient,
+		Pokedex: pokedex,
 	}
 
 	db, err := sql.Open("sqlite3", "pokedex.db")
@@ -34,9 +30,9 @@ func main() {
 
 	dbQueries := database.New(db)
 
-	programState := state {
-		db:		dbQueries,
-		cfg:	config,
+	programState := state.State {
+		Db:		dbQueries,
+		Cfg:	config,
 	}
 
 	fillPokedex(&programState)
@@ -44,8 +40,8 @@ func main() {
 }
 
 
-func fillPokedex(s *state) error {
-	pokedex, err := s.db.GetPokedex(context.Background())
+func fillPokedex(s *state.State) error {
+	pokedex, err := s.Db.GetPokedex(context.Background())
 	if err != nil {
 		return err
 	}
@@ -57,7 +53,7 @@ func fillPokedex(s *state) error {
 		if err != nil {
 			return err
 		}
-		s.cfg.pokedex[pokedexEntry.PokemonName] = pokemon 
+		s.Cfg.Pokedex[pokedexEntry.PokemonName] = pokemon 
 	}
 	return nil
 }

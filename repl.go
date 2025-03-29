@@ -5,17 +5,11 @@ import (
 	"bufio"
 	"strings"
 	"os"
-	"github.com/JustinPras/pokedexcli/internal/pokeapi"
+	"github.com/JustinPras/pokedexcli/internal/commands"
+	"github.com/JustinPras/pokedexcli/internal/state"
 )
 
-type Config struct {
-	pokeapiClient pokeapi.Client
-	previousURL *string
-	nextURL *string
-	pokedex map[string]pokeapi.Pokemon
-}
-
-func startRepl(state *state) {
+func startRepl(state *state.State) {
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
 		fmt.Print("Pokedex > ")
@@ -32,9 +26,9 @@ func startRepl(state *state) {
 		commandName := text[0]
 		args := text[1:]
 
-		command, exists := getCommands()[commandName]
+		command, exists := commands.GetCommands()[commandName]
 		if exists {
-			err := command.callback(state, args)
+			err := command.Callback(state, args)
 			if err != nil {
 				fmt.Println("Error: ", err)
 			}
@@ -48,55 +42,4 @@ func cleanInput(text string) []string {
 	output := strings.ToLower(text)
 	words := strings.Fields(output)
 	return words
-}
-
-type cliCommand struct {
-	name string
-	description string
-	callback func(*state, []string) error
-} 
-
-func getCommands() map[string]cliCommand {
-	return map[string]cliCommand{
-		"help": {
-			name:        "help",
-			description: "Displays a help message",
-			callback:    commandHelp,
-		},
-		"map": {
-			name:        "map",
-			description: "Display the next page of locations in the Pokemon world",
-			callback:    commandMap,
-		},
-		"mapb": {
-			name:        "mapb",
-			description: "Display the previous page of locations in the Pokemon world",
-			callback:    commandMapb,
-		},
-		"explore": {
-			name:        "explore <location_name>",
-			description: "Explore the Pokemon world",
-			callback:    commandExplore,
-		},
-		"catch": {
-			name:		"catch <pokemon_name>",
-			description:"Throw a Pokeball at a pokemon",
-			callback: commandCatch,
-		},
-		"inspect": {
-			name: 		"inspect <pokemon_name>",
-			description:"Inspect a Pokemon from your Pokedex",
-			callback:	commandInspect,
-		},
-		"pokedex": {
-			name:		"pokedex",
-			description:"Displays all Pokemon in your Pokedex",
-			callback:	commandPokedex,
-		},
-		"exit": {
-			name:        "exit",
-			description: "Exit the Pokedex",
-			callback:    commandExit,
-		},
-	}
 }
