@@ -4,6 +4,8 @@ import (
 	"github.com/JustinPras/pokedexcli/internal/state"
 )
 
+var gameVer = "platinum"
+
 type cliCommand struct {
 	name string
 	description string
