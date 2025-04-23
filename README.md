@@ -2,7 +2,7 @@
 
 ## To-Do List
 - [X] Persist a user's Pokedex to SQL database so they can save progress between sessions
-- [ ] Update the CLI to support the "up" arrow to cycle through previous commands
+- [X] Update the CLI to support the "up" arrow to cycle through previous commands
 - [ ] Simulate battles between pokemon
 - [ ] Add more unit tests
 - [X] Refactor your code to organize it better and make it more testable (make commands internal)
