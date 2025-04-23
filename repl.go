@@ -2,27 +2,34 @@ package main
 
 import (
 	"fmt"
-	"bufio"
 	"strings"
-	"os"
+	"io"
 	"github.com/JustinPras/pokedexcli/internal/commands"
 	"github.com/JustinPras/pokedexcli/internal/state"
+
+	"github.com/peterh/liner"
 )
 
 func startRepl(state *state.State) {
-	scanner := bufio.NewScanner(os.Stdin)
+	line := liner.NewLiner()
+	defer line.Close()
+
+	line.SetCtrlCAborts(true)
+
 	for {
-		fmt.Print("Pokedex > ")
-		ok := scanner.Scan()
-		if !ok {
-			break
-		}
+
+		input, err := line.Prompt("Pokedex > ")
+        if err == liner.ErrPromptAborted || err == io.EOF {
+            break
+        }
 		
-		text := cleanInput(scanner.Text())
+		line.AppendHistory(input)
+
+		text := cleanInput(input)
 		if len(text) == 0 {
 			continue
 		}
-
+		
 		commandName := text[0]
 		args := text[1:]
 
