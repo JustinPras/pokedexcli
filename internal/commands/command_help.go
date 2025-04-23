@@ -10,8 +10,12 @@ func commandHelp(s *state.State, args []string) error {
 	fmt.Println("Welcome to the Pokedex!")
 	fmt.Println("Usage:")
 	fmt.Println()
-	for _, command := range GetCommands() {
-		fmt.Printf("%s: %s\n", command.name, command.description)
+
+	cmds := GetCommands()
+
+	for _, commandName := range cmds.Order {
+		cmd := cmds.CommandMap[commandName]
+		fmt.Printf("%s: %s\n", cmd.name, cmd.description)
 	}
 	fmt.Println()
 	return nil

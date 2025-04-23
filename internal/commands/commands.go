@@ -10,8 +10,13 @@ type cliCommand struct {
 	Callback func(*state.State, []string) error
 } 
 
-func GetCommands() map[string]cliCommand {
-	return map[string]cliCommand{
+type OrderedCommands struct {
+	Order 		[]string
+	CommandMap 	map[string]cliCommand
+}
+
+func GetCommands() OrderedCommands {
+	commands :=  map[string]cliCommand{
 		"help": {
 			name:        "help",
 			description: "Displays a help message",
@@ -53,4 +58,11 @@ func GetCommands() map[string]cliCommand {
 			Callback:    commandExit,
 		},
 	}
+
+	order := []string{"help", "map", "mapb", "explore", "catch", "inspect", "pokedex", "exit"}
+
+	return OrderedCommands{
+        Order:      order,
+        CommandMap: commands,
+    }
 }

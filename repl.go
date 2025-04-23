@@ -33,7 +33,9 @@ func startRepl(state *state.State) {
 		commandName := text[0]
 		args := text[1:]
 
-		command, exists := commands.GetCommands()[commandName]
+		cmds := commands.GetCommands()
+
+		command, exists := cmds.CommandMap[commandName]
 		if exists {
 			err := command.Callback(state, args)
 			if err != nil {
