@@ -5,7 +5,10 @@ import (
 	"math/rand"
 	"time"
 	"github.com/JustinPras/pokedexcli/internal/state"
+	"github.com/JustinPras/pokedexcli/internal/pokeapi"
 )
+
+var encounterMethods = []string{"walk", "dark-grass", "grass-spots", "cave-spots"} // depends on type of gameplay
 
 // implement this function
 func commandExplore(s *state.State, args []string) error {
@@ -22,14 +25,25 @@ func commandExplore(s *state.State, args []string) error {
 		return err
 	}
 
-	fmt.Printf("Exploring %s...\n", location.Name)
+	fmt.Printf("\nExploring %s...\n\n", location.Name)
 
-	encounterMethods := []string{"walk", "dark-grass", "grass-spots", "cave-spots"}
+	pokemonName, ok := encounter(location)
+	if ok {
+		fmt.Printf("You encountered a %s!\n\n", pokemonName)
+	}
 
-	
+	fmt.Println("Found Pokemon:")
+	for _, encounter := range location.PokemonEncounters {
+		fmt.Printf(" - %s\n", encounter.Pokemon.Name)
+	}
+
+	fmt.Println()
+	return nil
+}
+
+func encounter(location pokeapi.Location) (string, bool) {
 	if len(location.PokemonEncounters) != 0 {
 		r := rand.New(rand.NewSource(time.Now().UnixNano()))
-		outerLoop:
 		for _, encounter := range location.PokemonEncounters {
 			for _, versionDetails := range encounter.VersionDetails {
 				if versionDetails.Version.Name == gameVer {
@@ -37,8 +51,7 @@ func commandExplore(s *state.State, args []string) error {
 						if contains(encounterMethods, encounterDetails.Method.Name) {
 							userChance := r.Intn(100)
 							if userChance < encounterDetails.Chance {
-								fmt.Printf("You encountered a %s\n", encounter.Pokemon.Name)
-								break outerLoop;
+								return encounter.Pokemon.Name, true
 							}
 						}
 					}
@@ -47,12 +60,7 @@ func commandExplore(s *state.State, args []string) error {
 			}
 		}
 	}
-
-	fmt.Println("Found Pokemon:")
-	for _, encounter := range location.PokemonEncounters {
-		fmt.Printf(" - %s\n", encounter.Pokemon.Name)
-	}
-	return nil
+	return "", false
 }
 
 func contains(slice []string, item string) bool {
